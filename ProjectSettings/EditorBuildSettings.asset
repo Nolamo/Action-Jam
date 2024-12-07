@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MultiplyerTestScene.unity
     guid: 138fa4a1fdc60544f934b82ed9a3b1a5
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Character Test.unity
+    guid: 990a87a0b5c042241bbfca898b4b3674
   m_configObjects: {}

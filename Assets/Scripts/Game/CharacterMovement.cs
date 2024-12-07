@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(GrappleHook))]
-public class CharacterMovement : MonoBehaviour
+public class CharacterMovement : NetworkBehaviour                       
 {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float acceleration;
@@ -37,56 +39,40 @@ public class CharacterMovement : MonoBehaviour
     Vector2 moveDirection;
     Vector2 aimDirection;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        rb = GetComponent<Rigidbody2D>();
-        defaultGravity = rb.gravityScale;
-        actions = new PlayerInputActions();
-        actions.Enable();
-        grappleHook = GetComponent<GrappleHook>();
-    }
+        enabled = IsLocalPlayer;
+        Debug.Log(IsLocalPlayer);
 
-    private void OnEnable()
-    {
-        if (actions == null) 
-        { 
+        if (IsLocalPlayer)
+        {
             actions = new PlayerInputActions();
             actions.Enable();
+            SubscribeInputs();
+            rb = GetComponent<Rigidbody2D>();
+            defaultGravity = rb.gravityScale;
+            grappleHook = GetComponent<GrappleHook>();
         }
-        SubscribeInputs();
     }
 
-    private void OnDisable()
+    private void Awake()
     {
-        UnsubscribeInputs();
+        enabled = false;
     }
 
     void SubscribeInputs()
     {
+        if (actions == null)
+        {
+            actions = new PlayerInputActions();
+            actions.Enable();
+        }
         actions.Player.Move.performed += Move_performed;
         actions.Player.Move.canceled += Move_canceled;
         actions.Player.Jump.performed += Jump_performed;
         actions.Player.Jump.canceled += Jump_canceled;
         actions.Player.AimPoint.performed += AimPoint_performed;
         actions.Player.Grapple.performed += Grapple_performed;
-        actions.Player.Grapple.canceled += Grapple_canceled;
-    }
-
-    private void Grapple_canceled(InputAction.CallbackContext obj)
-    {
-
-    }
-
-    private void Grapple_performed(InputAction.CallbackContext obj)
-    {
-        if (obj.performed)
-            Grapple();
-    }
-
-    private void AimPoint_performed(InputAction.CallbackContext obj)
-    {
-        Vector2 aimPosition = Camera.main.ScreenToWorldPoint(obj.ReadValue<Vector2>());
-        aimDirection = (aimPosition - rb.position).normalized;
     }
 
     void UnsubscribeInputs()
@@ -99,6 +85,18 @@ public class CharacterMovement : MonoBehaviour
     }
 
     #region inputFunctions
+
+    private void Grapple_performed(InputAction.CallbackContext obj)
+    {
+        if (obj.performed)
+            Grapple();
+    }
+
+    private void AimPoint_performed(InputAction.CallbackContext obj)
+    {
+        Vector2 aimPosition = Camera.main.ScreenToWorldPoint(obj.ReadValue<Vector2>());
+        aimDirection = (aimPosition - rb.position).normalized;
+    }
 
     private void Jump_performed(InputAction.CallbackContext obj)
     {
