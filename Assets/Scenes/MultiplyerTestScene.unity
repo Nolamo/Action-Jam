@@ -526,11 +526,23 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1129196745}
     - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _ipInputField
+      value: 
+      objectReference: {fileID: 1129196745}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
       propertyPath: portInputField
       value: 
       objectReference: {fileID: 557168420}
     - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _portInputField
+      value: 
+      objectReference: {fileID: 557168420}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
       propertyPath: startHostButton
+      value: 
+      objectReference: {fileID: 791049627}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _startHostButton
       value: 
       objectReference: {fileID: 791049627}
     - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
@@ -542,7 +554,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 586029807}
     - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _startClientButton
+      value: 
+      objectReference: {fileID: 1088298812}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _startServerButton
+      value: 
+      objectReference: {fileID: 586029807}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
       propertyPath: connectionUICanvas
+      value: 
+      objectReference: {fileID: 3688758196464898216}
+    - target: {fileID: 864249462431146786, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}
+      propertyPath: _connectionUICanvas
       value: 
       objectReference: {fileID: 3688758196464898216}
     - target: {fileID: 4436477624064981327, guid: 2d7597db429b0304eabe6fb62ce3cfee, type: 3}

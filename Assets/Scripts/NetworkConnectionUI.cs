@@ -2,73 +2,132 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class NetworkConnectionUI : MonoBehaviour
 {
-    protected NetworkManager networkManager;
+    protected NetworkManager _networkManager;
+    protected UnityTransport _networkTransport;
+
+    //protected ulong _clientId;
 
     [SerializeField]
-    protected GameObject connectionUICanvas;
+    protected GameObject _connectionUICanvas;
 
     [SerializeField]
-    protected TMP_InputField ipInputField;
+    protected TMP_InputField _ipInputField;
 
     [SerializeField]
-    protected TMP_InputField portInputField;
+    protected TMP_InputField _portInputField;
 
     [SerializeField]
-    protected Button startHostButton;
+    protected Button _startHostButton;
 
     [SerializeField]
-    protected Button startClientButton;
+    protected Button _startClientButton;
 
     [SerializeField]
-    protected Button startServerButton;
+    protected Button _startServerButton;
 
     void Awake()
     {
-        networkManager = GetComponent<NetworkManager>();
+        _networkManager = GetComponent<NetworkManager>();
+        _networkTransport = GetComponent<UnityTransport>();
 
-        if (ipInputField != null && portInputField != null)
+        _networkManager.OnClientConnectedCallback += OnClientConnected;
+        _networkManager.OnClientDisconnectCallback += OnClientDisconnected;
+
+        //_clientId = _networkManager.LocalClientId;
+
+        if (_ipInputField != null && _portInputField != null)
         {
 
         }
 
-        if (startHostButton != null)
+        if (_startHostButton != null)
         {
-            startHostButton.onClick.AddListener(StartHost);
+            _startHostButton.onClick.AddListener(StartHost);
         }
 
-        if (startClientButton != null)
+        if (_startClientButton != null)
         {
-            startClientButton.onClick.AddListener(OnStartClientButtonClicked);
+            _startClientButton.onClick.AddListener(OnStartClientButtonClicked);
+        }
+
+        if (_startServerButton != null)
+        {
+            _startServerButton.onClick.AddListener(OnStartServerButtonClicked);
+        }
+
+        if (_connectionUICanvas != null)
+        {
+            ShowConnectionUICanvas();
         }
     }
 
     protected void OnStartClientButtonClicked()
     {
-
-    }
-
-    public void StartHost() { networkManager.StartHost(); HideConnectionUICanvase(); }
-    public void StartClient() { networkManager.StartClient(); HideConnectionUICanvase(); }
-    public void StartServer() { networkManager.StartServer(); HideConnectionUICanvase(); }
-
-    public void ShowConnectionUICanvas()
-    {
-        if (connectionUICanvas != null)
+        if (_networkManager.IsServer == false && _networkManager.IsHost == false)
         {
-            connectionUICanvas.SetActive(true);
+            string ipAddress = _ipInputField.text;
+            ushort port;
+
+            if (ushort.TryParse(_portInputField.text, out port))
+            {
+                _networkTransport.SetConnectionData(ipAddress, port);
+                StartClient();
+            }
+            else
+            {
+                Debug.Log("Invalid Port");
+            }
         }
     }
 
-    public void HideConnectionUICanvase()
+    protected void OnStartServerButtonClicked()
     {
-        if (connectionUICanvas != null)
+        StartServer();
+    }
+
+    protected void OnClientConnected(ulong clientId)
+    {
+        Debug.Log($"Client {clientId} connected successfully.");
+
+        if (clientId == _networkManager.LocalClientId)
         {
-            connectionUICanvas.SetActive(false);
+            HideConnectionUICanvas();
+        }
+    }
+
+    protected void OnClientDisconnected(ulong clientId)
+    {
+        Debug.Log($"{clientId} has disconnected.");
+
+        if (clientId == _networkManager.LocalClientId)
+        {
+            ShowConnectionUICanvas();
+        }
+    }
+
+    public void StartHost() { _networkManager.StartHost();}
+    public void StartClient() { _networkManager.StartClient(); }
+    public void StartServer() { _networkManager.StartServer(); }
+
+    public void ShowConnectionUICanvas()
+    {
+        if (_connectionUICanvas != null)
+        {
+            _connectionUICanvas.SetActive(true);
+        }
+    }
+
+    public void HideConnectionUICanvas()
+    {
+        if (_connectionUICanvas != null)
+        {
+            _connectionUICanvas.SetActive(false);
         }
     }
 
