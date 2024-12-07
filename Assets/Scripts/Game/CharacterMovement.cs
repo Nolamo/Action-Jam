@@ -41,23 +41,20 @@ public class CharacterMovement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        enabled = IsLocalPlayer;
-        Debug.Log(IsLocalPlayer);
+        //enabled = IsOwner;
+        Debug.LogError(IsOwner);
 
-        if (IsLocalPlayer)
-        {
-            actions = new PlayerInputActions();
-            actions.Enable();
-            SubscribeInputs();
-            rb = GetComponent<Rigidbody2D>();
-            defaultGravity = rb.gravityScale;
-            grappleHook = GetComponent<GrappleHook>();
-        }
+        actions = new PlayerInputActions();
+        actions.Enable();
+        SubscribeInputs();
+        rb = GetComponent<Rigidbody2D>();
+        defaultGravity = rb.gravityScale;
+        grappleHook = GetComponent<GrappleHook>();
     }
 
     private void Awake()
     {
-        enabled = false;
+        //enabled = false;
     }
 
     void SubscribeInputs()
@@ -125,6 +122,7 @@ public class CharacterMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (IsOwner == false) return;
         UpdateGravity();
         Move();
     }
